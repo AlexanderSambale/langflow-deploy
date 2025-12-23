@@ -1,6 +1,10 @@
 services:
   langflow:
-    image: langflowai/langflow:latest # or another version tag on https://hub.docker.com/r/langflowai/langflow
+    build: 
+      dockerfile: Dockerfile
+      context: .
+      args: 
+        - IMAGE=${IMAGE}
     user: root
     ports:
       - "127.0.0.1:7860:7860"
@@ -12,8 +16,12 @@ services:
       - LANGFLOW_CONFIG_DIR=/app/langflow
 #      - LANGFLOW_LOAD_FLOWS_PATH=/app/langflow/templates/starter_projects
       - DO_NOT_TRACK=true                  # the env‑var you asked for
+      - REQUESTS_CA_BUNDLE=${REQUESTS_CA_BUNDLE}
     volumes:
       - ./langflow-data:/app/langflow   # host folder
+      - ${CERTS}
+
+# 
 
   postgres:
     image: postgres:16
